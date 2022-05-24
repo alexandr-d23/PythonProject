@@ -19,7 +19,8 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='home.html'), name='home' ),
+    # path('', TemplateView.as_view(template_name='home.html'), name='home' ),
 
-    path('users/', include('url_shortener.urls'))
+
+    path('', include('url_shortener.urls'))
 ]

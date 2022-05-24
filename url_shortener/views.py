@@ -4,7 +4,26 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.views import View
 
-from url_shortener.forms import UserCreationForm
+from url_shortener.forms import UserCreationForm, UrlForm
+from url_shortener.models import UrlWithShortcut
+
+
+class Home(View):
+    template_name = 'home.html'
+
+    def get(self, request):
+        context = {
+            'form': UrlForm
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        form = UrlForm(request.POST)
+        print(form.url)
+        context = {
+            'form': form
+        }
+        return render(request, self.template_name, context)
 
 
 class Register(View):

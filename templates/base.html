@@ -12,12 +12,25 @@
     <li class="list-group-item">
         User {{ user }}
     </li>
+    {% if user.is_authenticated %}
+        <li class="list-group-item">
+            <a href="{% url 'logout' %}"> Logout</a>
+        </li>
+    {% else %}
+        <li class="list-group-item">
+
+            <a href="{% url 'login' %}">Login</a>
+        </li>
+        <li class="list-group-item">
+            <a href="{% url 'register' %}">Register</a>
+        </li>
+    {% endif %}
     <li class="list-group-item">
         <a href="{% url 'home' %}">Home</a>
     </li>
 </ul>
 
-{%  block content %}
+{% block content %}
 {% endblock %}
 
 </body>
