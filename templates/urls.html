@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="my-center-block">
+
+        <link rel="stylesheet" type="text/css" href='../static/css/styles.css'/>
+        {% for url in urls %}
+            <form action="" method="post">
+                <div>
+                    Url:
+                    <td><a href="../{{ url.url_shortcut }}">{{ url.url_shortcut }}</a></td>
+                </div>
+                <div>
+                    Full_url:
+                    <td><a href="{{ url.full_url }}">{{ url.full_url }}</a></td>
+                </div>
+                <div>
+                    Used: {{ url.usage_count }}
+                </div>
+
+                <input type="hidden" name="url_id" value="{{ url.id }}">
+                {% csrf_token %}
+                <button type="submit" name="color-button" class="btn btn-dark">Delete</button>
+            </form>
+        {% endfor %}
+    </div>
+{% endblock %}

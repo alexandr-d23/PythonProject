@@ -1,13 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Home page</h1>
+    <h1>Enter url to reduce</h1>
 
     <hr>
 
     {% if user.is_authenticated %}
+        <form action="{% url 'home' %}" method="post">
         <li class="list-group-item">
             {{ form }}
         </li>
+
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Submit</button>
+
+        <hr>
+
+    {% if full_url %}
+        <h2> Full url: {{ full_url }}</h2>
+    {% endif %}
+
+    {% if url_shortcut %}
+        <h2> Reduced url: {{ url_shortcut }}</h2>
+    {% endif %}
     {% endif %}
 {% endblock %}
