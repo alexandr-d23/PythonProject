@@ -1,10 +1,12 @@
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.views import View
 
+from djangoProject.settings import LOGIN_REDIRECT_URL
 from url_shortener.forms import UserCreationForm, UrlForm
 from url_shortener.models import UrlWithShortcut, get_short_url
 
@@ -12,14 +14,16 @@ from url_shortener.models import UrlWithShortcut, get_short_url
 class Reduced(View):
     def get(self, request, short):
         # short_url = short
-        print(short)
-        short_url = UrlWithShortcut.objects.get(url_shortcut=short)
-        print(short_url)
-        short_url.usage_count += 1
+        try:
+            print(short)
+            short_url = UrlWithShortcut.objects.get(url_shortcut=short)
+            print(short_url)
+            short_url.usage_count += 1
 
-        short_url.save()
-
-        return HttpResponseRedirect(short_url.full_url)
+            short_url.save()
+            return HttpResponseRedirect(short_url.full_url)
+        except:
+            raise Http404()
 
 
 class Home(View):
@@ -61,6 +65,8 @@ class Register(View):
     template_name = 'registration/register.html'
 
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect("/")
         context = {
             'form': UserCreationForm()
         }
@@ -87,14 +93,17 @@ class ReducedUrls(View):
     template_name = 'urls.html'
 
     def get(self, request):
-        user = request.user
-        print('user id: ')
-        print(user.id)
-        urls = UrlWithShortcut.objects.filter(user_id=user.id).order_by('-usage_count')
-        context = {
-            'urls': urls
-        }
-        return render(request, self.template_name, context)
+        if request.user.is_authenticated:
+            user = request.user
+            print('user id: ')
+            print(user.id)
+            urls = UrlWithShortcut.objects.filter(user_id=user.id).order_by('-usage_count')
+            context = {
+                'urls': urls
+            }
+            return render(request, self.template_name, context)
+        else:
+            return redirect("/")
 
     def post(self, request):
         url_id = request.POST.get("url_id", "")
