@@ -1,5 +1,6 @@
 from random import choice
 from string import ascii_letters, digits
+import bcrypt
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -25,5 +26,8 @@ class UrlWithShortcut(models.Model):
         super().save(*args, **kwargs)
 
 
-def get_short_url():
-    return ''.join(choice(digits + ascii_letters) for i in range(12))
+def get_short_url(url):
+    salt = bcrypt.gensalt()
+    hashedUrl = bcrypt.hashpw(url.encode('utf-8'), salt).decode()
+    print(hashedUrl)
+    return hashedUrl[0:6]

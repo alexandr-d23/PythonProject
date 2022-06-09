@@ -40,9 +40,9 @@ class Home(View):
 
         if form.is_valid():
             model = form.save(commit=False)
-            model.url_shortcut = get_short_url()
-            model.user = request.user
             model.full_url = form.cleaned_data.get('full_url')
+            model.url_shortcut = get_short_url(model.full_url)
+            model.user = request.user
             model.save()
 
             url_shortcut = request.build_absolute_uri('/') + model.url_shortcut
